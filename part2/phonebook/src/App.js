@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personServices from './services/persons'
+
 
 const PersonDetail = (props) => {
   function removeContact(e) {
@@ -99,11 +99,12 @@ const App = () => {
     }
 
     for (const person of persons){
-      if (person.name == nameObj.name) {
+      if (person.name === nameObj.name) {
         if (window.confirm(`${nameObj.name} is already added to phonebook, replace old number with the new one?`)) {
           personServices
             .update(person.id, nameObj)
             .then(response=> {
+              console.log(response.data);
               setPersons(persons.map(person=> person.name !== nameObj.name ? person : response.data))
               setNewName('Enter name')
               setNewNumber('Enter number')
@@ -132,6 +133,12 @@ const App = () => {
         setConfirmMessage(`Added ${nameObj.name}`)
         setTimeout(()=>{
           setConfirmMessage(null)
+        }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage(null)
         }, 5000)
       })
   
